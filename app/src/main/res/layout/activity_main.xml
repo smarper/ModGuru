@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -9,16 +10,20 @@
     <Button
         android:id="@+id/testButton2"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="46dp"
+        android:layout_marginTop="8dp"
         android:text="Stop"
-        tools:layout_editor_absoluteX="16dp"
-        tools:layout_editor_absoluteY="78dp"/>
+        android:visibility="visible"
+        app:layout_constraintTop_toBottomOf="@+id/testButton"
+        tools:layout_editor_absoluteX="16dp"/>
 
     <Button
         android:id="@+id/testButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:text="Start"
-        tools:layout_editor_absoluteX="16dp"
-        tools:layout_editor_absoluteY="16dp"/>
+        android:visibility="visible"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="16dp"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

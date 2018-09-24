@@ -1,9 +1,7 @@
 package com.mrap.sma.modguru.Mixer
 
-import com.mrap.sma.modguru.ConstValues
 import com.mrap.sma.modguru.Interface.IChannelMixer
 import com.mrap.sma.modguru.Player.Channel
-import com.mrap.sma.modguru.Song.SampleHeader
 
 /**
  * Created by SMA on 27.10.2014.
@@ -20,11 +18,10 @@ class ChannelMixerLinearInterpolate : IChannelMixer
         if (channelData.SampleHeader == null || channelData.SampleHeader?.SampleData == null)
             return
 
-        val leftMul = if (channelData.Panning == 0) 0.2F * 0.75F else 0.8F * 0.75F
-        val rightMul = if (channelData.Panning == 255) 0.8F * 0.75F else 0.2F * 0.75F
-
+        val leftMul = if (channelData.Panning == 0) 0.8F * 0.75F else 0.2F * 0.75F
+        val rightMul = if (channelData.Panning == 0) 0.2F * 0.75F else 0.8F * 0.75F
         val sampleHeader = channelData.SampleHeader!!
-        for (i in offset until offset + count )
+        for (i in offset until offset + count)
         {
             if (channelData.IncPos >= sampleHeader.Length)
             {
@@ -41,7 +38,6 @@ class ChannelMixerLinearInterpolate : IChannelMixer
 
             position = channelData.IncPos.toInt()
             sample = sampleHeader.SampleData!![position]
-
             // lineare Interpolation
             nextsample = sampleHeader.SampleData!![position + 1]
             intsample = sample + ((nextsample - sample) * (channelData.IncPos - channelData.IncPos.toInt()))

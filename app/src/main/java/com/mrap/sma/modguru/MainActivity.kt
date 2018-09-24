@@ -5,13 +5,14 @@ import androidx.appcompat.app.AppCompatActivity
 import com.mrap.sma.modguru.Player.ModPlayer
 import com.mrap.sma.modguru.Song.MixingInfo
 import com.mrap.sma.modguru.audiodriver.AudioDriver
+import kotlinx.android.synthetic.main.activity_main.*
 import java.io.File
 import java.io.FileOutputStream
 
 class MainActivity : AppCompatActivity()
 {
-    private val audioDriver = AudioDriver();
-    private val thread1 = Thread(audioDriver)
+    private var audioDriver: AudioDriver? = null
+    private var audioPlayThread: Thread? = null
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
@@ -20,17 +21,28 @@ class MainActivity : AppCompatActivity()
         testButton.setOnClickListener()
         {
             val mixingInfo = MixingInfo()
-            mixingInfo.mixFreq = audioDriver.sampleRate
+            mixingInfo.mixFreq = AudioDriver.getNativeSampleRate()
             val modPlayer = ModPlayer(mixingInfo)
             modPlayer.LoadMod(GetTestMod())
-
-            audioDriver.modPlayer = modPlayer
-            thread1.start()
+            if (audioDriver != null)
+            {
+                stopPlayer()
+            }
+            audioDriver = AudioDriver(modPlayer)
+            audioPlayThread = Thread(audioDriver)
+            audioPlayThread?.start()
         }
+
         testButton2.setOnClickListener()
         {
-            audioDriver.StopPlay()
+            stopPlayer()
         }
+    }
+
+    private fun stopPlayer()
+    {
+        audioDriver?.StopPlay()
+        audioPlayThread?.interrupt()
     }
 
     fun GetTestMod(): String

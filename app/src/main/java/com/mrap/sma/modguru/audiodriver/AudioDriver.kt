@@ -4,30 +4,35 @@ import android.media.AudioAttributes
 import android.media.AudioFormat
 import android.media.AudioManager
 import android.media.AudioTrack
-import android.os.Parcel
-import android.os.Parcelable
 import android.util.Log
 import com.mrap.sma.modguru.Interface.IAudioDriver
 import com.mrap.sma.modguru.Interface.IModPlayer
 
-class AudioDriver() : Runnable, IAudioDriver
+class AudioDriver(aModPlayer: IModPlayer) : Runnable, IAudioDriver
 {
     private var audioTrack: AudioTrack? = null
     private val buffer: FloatArray
     override var modPlayer: IModPlayer? = null
-    val sampleRate: Int = AudioTrack.getNativeOutputSampleRate(AudioTrack.MODE_STREAM)
+    private val sampleRate = getNativeSampleRate()
+
+    companion object
+    {
+        fun getNativeSampleRate() = AudioTrack.getNativeOutputSampleRate(AudioTrack.MODE_STREAM)
+    }
 
     init
     {
+        modPlayer = aModPlayer
+
         var minBufferSize = AudioTrack.getMinBufferSize(sampleRate, AudioFormat.CHANNEL_OUT_STEREO,
                 AudioFormat.ENCODING_PCM_FLOAT)
-        if (minBufferSize == AudioTrack.ERROR_BAD_VALUE)
+        minBufferSize = if (minBufferSize == AudioTrack.ERROR_BAD_VALUE)
         {
             Log.e("AudiDriver Minsize:", "Invalid parameter!");
-            minBufferSize = sampleRate shr 2
+            sampleRate shr 2
         }
         else
-            minBufferSize = minBufferSize shr 2 + 1024
+            minBufferSize shr 2 + 1024
         Log.i("AudiDriver Minsize:", minBufferSize.toString())
         buffer = FloatArray(minBufferSize)
 
