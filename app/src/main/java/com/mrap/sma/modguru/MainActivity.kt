@@ -1,12 +1,10 @@
 package com.mrap.sma.modguru
 
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
-import com.mrap.sma.modguru.Loader.ModLoader
+import androidx.appcompat.app.AppCompatActivity
 import com.mrap.sma.modguru.Player.ModPlayer
 import com.mrap.sma.modguru.Song.MixingInfo
 import com.mrap.sma.modguru.audiodriver.AudioDriver
-import kotlinx.android.synthetic.main.activity_main.*
 import java.io.File
 import java.io.FileOutputStream
 
