@@ -1,4 +1,4 @@
-package com.mrap.sma.modguru.Song
+package com.mrap.sma.modguru.song
 /**
  * Created by SMA on 26.10.2014.
  */
@@ -7,41 +7,41 @@ class SampleHeader
     /// <summary>
     /// Name des Samples
     /// </summary>
-    var SampleName: String = ""
+    var sampleName: String = ""
     /// <summary>
     /// Länge des Samples in Bytes
     /// </summary>
-    var Length: Int = 0
+    var length: Int = 0
     /// <summary>
-    /// Finetune -8 bis +8
+    /// finetune -8 bis +8
     /// </summary>
-    var Finetune: Int = 0
+    var finetune: Int = 0
     /// <summary>
     /// Globale Lautstärke des Samples
     /// </summary>
-    var Volume: Int = 0
+    var volume: Int = 0
     /// <summary>
     /// Position des Repeats
     /// </summary>
-    var RepeatOffset: Int = 0
+    var repeatOffset: Int = 0
     /// <summary>
     /// Länge des Repeats in Byte
     /// </summary>
-    var RepatLength: Int = 0
+    var repatLength: Int = 0
     /// <summary>
     /// Endposition des Repeats
     /// </summary>
-    var RepeatEnd: Int = 0
+    var repeatEnd: Int = 0
     /// <summary>
     /// Ist der Sample gelooped?
     /// </summary>
-    var Looped: Boolean = false
+    var looped: Boolean = false
     /// <summary>
     /// C2 Speed of the Sample
     /// </summary>
-    var C2SPD: Int = 0
+    var c2Spd: Int = 0
     /// <summary>
     /// Die Sampledaten (16 Bit signed)
     /// </summary>
-    var SampleData: FloatArray? = null
+    var sampleData: FloatArray? = null
 }

@@ -5,14 +5,14 @@ import android.media.AudioFormat
 import android.media.AudioManager
 import android.media.AudioTrack
 import android.util.Log
-import com.mrap.sma.modguru.Interface.IAudioDriver
-import com.mrap.sma.modguru.Interface.IModPlayer
+import com.mrap.sma.modguru.interfaces.IAudioDriver
+import com.mrap.sma.modguru.interfaces.IModPlayer
 
 class AudioDriver(aModPlayer: IModPlayer) : Runnable, IAudioDriver
 {
     private var audioTrack: AudioTrack? = null
     private val buffer: FloatArray
-    override var modPlayer: IModPlayer? = null
+    override val modPlayer: IModPlayer? = aModPlayer
     private val sampleRate = getNativeSampleRate()
 
     companion object
@@ -22,13 +22,11 @@ class AudioDriver(aModPlayer: IModPlayer) : Runnable, IAudioDriver
 
     init
     {
-        modPlayer = aModPlayer
-
         var minBufferSize = AudioTrack.getMinBufferSize(sampleRate, AudioFormat.CHANNEL_OUT_STEREO,
                 AudioFormat.ENCODING_PCM_FLOAT)
         minBufferSize = if (minBufferSize == AudioTrack.ERROR_BAD_VALUE)
         {
-            Log.e("AudiDriver Minsize:", "Invalid parameter!");
+            Log.e("AudiDriver Minsize:", "Invalid parameter!")
             sampleRate shr 2
         }
         else
@@ -52,7 +50,7 @@ class AudioDriver(aModPlayer: IModPlayer) : Runnable, IAudioDriver
     }
 
     @Synchronized
-    override fun StartPlay()
+    override fun startPlay()
     {
         if (audioTrack != null)
         {
@@ -62,7 +60,7 @@ class AudioDriver(aModPlayer: IModPlayer) : Runnable, IAudioDriver
             {
                 if (audioTrack?.playState == AudioTrack.PLAYSTATE_PLAYING)
                 {
-                    modPlayer?.GetBuffer(buffer, buffer.size)
+                    modPlayer?.getBuffer(buffer, buffer.size)
                     audioTrack?.write(buffer, 0, buffer.size, AudioTrack.WRITE_BLOCKING)
                 }
                 else
@@ -72,7 +70,7 @@ class AudioDriver(aModPlayer: IModPlayer) : Runnable, IAudioDriver
         audioTrack?.release()
     }
 
-    override fun StopPlay()
+    override fun stopPlay()
     {
         if (audioTrack?.playState != AudioTrack.PLAYSTATE_STOPPED)
         {
@@ -81,7 +79,7 @@ class AudioDriver(aModPlayer: IModPlayer) : Runnable, IAudioDriver
         }
     }
 
-    override fun Pause()
+    override fun pause()
     {
         if (audioTrack?.playState != AudioTrack.PLAYSTATE_PAUSED)
             audioTrack?.pause()
@@ -97,7 +95,7 @@ class AudioDriver(aModPlayer: IModPlayer) : Runnable, IAudioDriver
 
         if (audioTrack?.playState != AudioTrack.PLAYSTATE_PLAYING)
         {
-            StartPlay()
+            startPlay()
         }
     }
 }

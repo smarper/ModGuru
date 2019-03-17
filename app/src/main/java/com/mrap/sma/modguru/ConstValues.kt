@@ -2,17 +2,36 @@ package com.mrap.sma.modguru
 
 object ConstValues
 {
-    val MIXBITS = 11
+    // Loader
+    val MODTYPES =
+            hashMapOf("M.K." to 4,
+                    "M!K!" to 4,
+                    "FLT4" to 4,
+                    "FLT6" to 6,
+                    "FLT8" to 8,
+                    "4CHN" to 4,
+                    "6CHN" to 6,
+                    "8CHN" to 8,
+                    "10CH" to 10,
+                    "12CH" to 12,
+                    "14CH" to 14,
+                    "16CH" to 16,
+                    "18CH" to 18,
+                    "20CH" to 20,
+                    "22CH" to 22,
+                    "24CH" to 24,
+                    "26CH" to 26,
+                    "28CH" to 28,
+                    "30CH" to 30,
+                    "32CH" to 32,
+                    "CD81" to 8,
+                    "OKTA" to 8)
 
-    val MIXMASK = (1 shl MIXBITS) - 1
+    const val ADD_SAMPLES = 32
+    const val FADEOUT_SAMPLES = 8
 
-    val DECLICKLENGTH: Short = 256
-
-    val DECLICKSHIFT: Short = 8
-
-    val POSMARKERSIZE = 420
-
-    val SinusTable = intArrayOf(
+    // Effects
+    val SINUS_TABLE = intArrayOf(
             0, 24, 49, 74, 97, 120, 141, 161,
             180, 197, 212, 224, 235, 244, 250, 253,
             255, 253, 250, 244, 235, 224, 212, 197,
@@ -40,14 +59,14 @@ object ConstValues
             -46,  176,   42, -188,   16,  212,   42, -224,   12,  218,   40, -176,  -60,   18, -254,  236,
             84,  -68,  178,   -8, -102, -144,   42,  -58,  224,  246,  168, -202, -184,  196, -108, -190)
 
-    val ProTrackerNotes = intArrayOf(
+    val PROTRACKER_NOTES = intArrayOf(
             1712, 1616, 1524, 1440, 1356, 1280, 1208, 1140, 1076, 1016, 960, 906,
             856, 808, 762, 720, 678, 640, 604, 570, 538, 508, 480, 453,
             428, 404, 381, 360, 339, 320, 302, 285, 269, 254, 240, 226,
             214, 202, 190, 180, 170, 160, 151, 143, 135, 127, 120, 113,
             107, 101, 95, 90, 85, 80, 75, 71, 67, 63, 60, 56)
 
-    val UniNoteTable = intArrayOf(
+    val UNI_NOTE_TABLE = intArrayOf(
             27392, 25856, 24384, 23040, 21696, 20480, 19328, 18240, 17216, 16256, 15360, 14496,
             13696, 12928, 12192, 11520, 10848, 10240, 9664, 9120, 8608, 8128, 7680, 7248,
             6848, 6464, 6096, 5760, 5424, 5120, 4832, 4560, 4304, 4064, 3840, 3624,
@@ -58,7 +77,7 @@ object ConstValues
             214, 202, 190, 180, 170, 160, 151, 143, 135, 127, 120, 113,
             107, 101, 95, 90, 85, 80, 75, 71, 67, 63, 60, 56)
 
-    val FineTune2C2SPD = shortArrayOf(
+    val FINETUNE_C2SPD = shortArrayOf(
             8363, 8413, 8463, 8529, 8581, 8651, 8723, 8757,
             7895, 7941, 7985, 8046, 8107, 8169, 8232, 8280)
 
@@ -106,7 +125,7 @@ object ConstValues
         Stereo
     }
 
-    enum class EMixFreq private constructor(val value: Int)
+    enum class EMixFreq(val value: Int)
     {
         FRQ_48000(48000),
         FRQ_44100(44100),

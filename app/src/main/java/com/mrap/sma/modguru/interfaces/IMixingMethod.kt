@@ -1,6 +1,6 @@
-package com.mrap.sma.modguru.Interface
+package com.mrap.sma.modguru.interfaces
 
-import com.mrap.sma.modguru.Player.Channel
+import com.mrap.sma.modguru.player.Channel
 
 /**
  * Created by SMA on 27.10.2014.

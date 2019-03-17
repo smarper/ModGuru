@@ -1,8 +1,7 @@
-package com.mrap.sma.modguru.Loader
+package com.mrap.sma.modguru.loader
 
 import java.io.FileInputStream
 import java.io.RandomAccessFile
-import kotlin.experimental.and
 
 /**
  * Created by SMA on 27.10.2014.
@@ -11,13 +10,13 @@ class Reader(fileName: String, mode: String) : RandomAccessFile(fileName, mode)
 {
     private val streamFile: FileInputStream = FileInputStream(super.getFD())
 
-    fun ReadMotorolaWord(): Int
+    fun readMotorolaWord(): Int
     {
         val word = readUnsignedByte() shl 8
         return word or readUnsignedByte()
     }
 
-    fun ReadString(aCount: Int): String
+    fun readString(aCount: Int): String
     {
         // readstring
         val tmp = ByteArray(aCount)

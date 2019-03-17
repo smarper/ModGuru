@@ -1,4 +1,4 @@
-package com.mrap.sma.modguru.Interface
+package com.mrap.sma.modguru.interfaces
 
 import com.mrap.sma.modguru.ConstValues
 

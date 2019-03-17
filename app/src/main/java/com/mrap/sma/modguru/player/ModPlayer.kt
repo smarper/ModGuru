@@ -1,13 +1,12 @@
-package com.mrap.sma.modguru.Player
+package com.mrap.sma.modguru.player
 
 import com.mrap.sma.modguru.ConstValues
-import com.mrap.sma.modguru.Interface.*
-import com.mrap.sma.modguru.Loader.ModLoader
-import com.mrap.sma.modguru.Mixer.ChannelMixerLinearInterpolate
-import com.mrap.sma.modguru.Mixer.MixFloatStereo
-import com.mrap.sma.modguru.Song.MixingInfo
-import com.mrap.sma.modguru.Song.Pattern
-import com.mrap.sma.modguru.Song.SongHeader
+import com.mrap.sma.modguru.interfaces.*
+import com.mrap.sma.modguru.loader.ModLoader
+import com.mrap.sma.modguru.mixer.ChannelMixerLinearInterpolate
+import com.mrap.sma.modguru.song.MixingInfo
+import com.mrap.sma.modguru.song.Pattern
+import com.mrap.sma.modguru.song.SongHeader
 import java.util.*
 
 /**
@@ -16,65 +15,60 @@ import java.util.*
 class ModPlayer(aMixingInfo: MixingInfo) : IModPlayer
 {
     private val mixingInfo = aMixingInfo
-    private val Loader: ILoader = ModLoader()
+    private val loader: ILoader = ModLoader()
     var songHeader: SongHeader = SongHeader()
         private set
-    private var mixingMethod: IMixingMethod = MixFloatStereo()
     private var channelMixer: IChannelMixer = ChannelMixerLinearInterpolate()
-    private val Channels: MutableList<Channel> = mutableListOf()
-    private lateinit var patterns: List<Pattern>
-    lateinit var PatternOrder: MutableList<Int>
+    private val channelList: MutableList<Channel> = mutableListOf()
+    private lateinit var patternList: List<Pattern>
+    lateinit var patternOrderList: MutableList<Int>
     private var resetFlag = false
-    var Tickspeed = 6
-    var Bpm = 125
+    var tickspeed = 6
+    var bpm = 125
     private var currentTick: Int = 0
-    var CurrentPattern: Int = 0
-    var CurrentRow = 0
+    var currentPattern: Int = 0
+    var currentRow = 0
     private var samplesLeftForTick: Int = 0
     private var songPos: Int = 0
     private var currentPos = 0
     private var bufDivision = 1
     // used for effect 0xB and 0xD
-    var BreakFlag = false
-    var JumpFlag = false
-    // used for PatternDelay
-    var PatternDelay: Int = 0
-    var PatternDelayEffectValue: Int = 0
+    var breakFlag = false
+    var jumpFlag = false
+    // used for patternDelay
+    var patternDelay: Int = 0
+    var patternDelayEffectValue: Int = 0
 
     /// <summary>
     /// Current song position
     /// </summary>
-    fun GetSongPos(): Int
-    {
-        return songPos
-    }
+    fun getSongPos(): Int = songPos
 
-    fun SetSongPos(value: Int)
+    fun setSongPos(value: Int)
     {
-        if (value > songHeader.SongLength)
+        songPos = if (value > songHeader.SongLength)
         {
             if (songHeader.RestartPos > songHeader.SongLength || songHeader.RestartPos < 0)
-                songPos = 0
+                0
             else
-                songPos = songHeader.RestartPos
+                songHeader.RestartPos
         }
         else if (value < 0)
-            songPos = 0
+            0
         else
-            songPos = value
+            value
     }
 
-
     // Reset channel data, used if you stop the song or jump to another pattern
-    fun ResetSong()
+    private fun resetSong()
     {
         songPos = 0
-        CurrentRow = 0
-        CurrentPattern = PatternOrder[0]
+        currentRow = 0
+        currentPattern = patternOrderList[0]
         currentTick = 66
-        Tickspeed = 6
-        Bpm = 125
-        Channels.clear()
+        tickspeed = 6
+        bpm = 125
+        channelList.clear()
     }
 
     /// <summary>
@@ -86,31 +80,30 @@ class ModPlayer(aMixingInfo: MixingInfo) : IModPlayer
         bufDivision = bufDivision shl if (mixingInfo.bitsPerSample == 16) 1 else 0
         bufDivision = bufDivision shl if (mixingInfo.monoStereo == ConstValues.EMonoStereo.Stereo) 1 else 0
 
-        for (Channel in Channels)
+        for (Channel in channelList)
         {
-            Channel.SetMixFreq(mixingInfo.mixFreq)
+            Channel.setMixFreq(mixingInfo.mixFreq)
         }
     }
-
 
     /// <summary>
     /// Load module file
     /// </summary>
     /// <param name="aFile"></param>
     /// <returns></returns>
-    fun LoadMod(aFile: String): Boolean
+    fun loadMod(aFile: String): Boolean
     {
-        val result = Loader.LoadSong(aFile)
+        val result = loader.loadSong(aFile)
         if (result)
         {
-            songHeader = Loader.songHeader
-            patterns = songHeader.Patterns
-            PatternOrder = songHeader.PatternOrder
-            ResetSong()
+            songHeader = loader.songHeader
+            patternList = songHeader.Patterns
+            patternOrderList = songHeader.PatternOrder
+            resetSong()
             for (i in 0 until songHeader.Channels)
             {
-                Channels.add(Channel(this))
-                Channels[i].Panning = if (i % 4 == 0 || i % 4 == 3) 255 else 0
+                channelList.add(Channel(this))
+                channelList[i].panning = if (i % 4 == 0 || i % 4 == 3) 255 else 0
             }
             setAudioMixerInfo()
             //DoNextLine();
@@ -124,12 +117,11 @@ class ModPlayer(aMixingInfo: MixingInfo) : IModPlayer
     /// <param name="buffer"></param>
     /// <param name="count"></param>
     /// <returns></returns>
-    override fun GetBuffer(buffer: FloatArray, count: Int): Int
+    override fun getBuffer(buffer: FloatArray, count: Int): Int
     {
         var tickPart: Int
 
         Arrays.fill(buffer, 0, count, 0F)
-
         var samplesLeftTotal = count / 2
         while (samplesLeftTotal > 0)
         {
@@ -137,27 +129,22 @@ class ModPlayer(aMixingInfo: MixingInfo) : IModPlayer
             if (samplesLeftForTick == 0)
             {
                 // New row in song?
-                if (++currentTick >= Tickspeed)
+                if (++currentTick >= tickspeed)
                 {
                     // Read data for new row
                     doTick()
                 }
                 // Do effects
                 doEffects()
-                samplesLeftForTick = 125 * mixingInfo.mixFreq / (50 * Bpm)
+                samplesLeftForTick = 125 * mixingInfo.mixFreq / (50 * bpm)
             }
             // Calculate sample count for the next tick
             tickPart = Math.min(samplesLeftTotal, samplesLeftForTick)
-            for (Channel in Channels)
+            for (Channel in channelList)
             {
-                if (Channel.SampleHeader?.SampleData != null &&
-                        Channel.IsPlayingNote && !Channel.Muted)
-                {
-                    channelMixer.MixBufferChannel(buffer, Channel, tickPart, currentPos)
-                }
+                channelMixer.mixBufferChannel(buffer, Channel, tickPart, currentPos)
             }
-//            mixingMethod.mixChannelToMainBuffer(Channels, buffer, currentPos, currentPos, tickPart)
-
+//            mixingMethod.mixChannelToMainBuffer(channelList, buffer, currentPos, currentPos, tickPart)
             currentPos += tickPart
             samplesLeftTotal -= tickPart
             samplesLeftForTick -= tickPart
@@ -176,47 +163,47 @@ class ModPlayer(aMixingInfo: MixingInfo) : IModPlayer
         if (resetFlag)
         {
             resetFlag = false
-            for (Channel in Channels)
+            for (Channel in channelList)
             {
-                Channel.ResetChannel()
+                Channel.resetChannel()
             }
         }
         currentTick = 0
-        if (PatternDelay > 0)
+        if (patternDelay > 0)
         {
-            Tickspeed = PatternDelay
-            PatternDelay = 0
+            tickspeed = patternDelay
+            patternDelay = 0
         }
-        if (CurrentRow == 64)
+        if (currentRow == 64)
         {
-            SetSongPos(songPos + 1)
-            CurrentPattern = PatternOrder[songPos]
-            CurrentRow = 0
+            setSongPos(songPos + 1)
+            currentPattern = patternOrderList[songPos]
+            currentRow = 0
         }
-        for (i in 0 until Channels.size)
+        for (i in 0 until channelList.size)
         {
-            Channels[i].SetNewNote(patterns[CurrentPattern].Rows[CurrentRow].Notes[i])
+            channelList[i].setNewNote(patternList[currentPattern].Rows[currentRow].Notes[i])
         }
-        CurrentRow++
+        currentRow++
     }
 
     fun MoveSongPos(aDelta: Int)
     {
-        SetSongPos(songPos + aDelta)
-        CurrentPattern = PatternOrder[songPos]
-        CurrentRow = 0
+        setSongPos(songPos + aDelta)
+        currentPattern = patternOrderList[songPos]
+        currentRow = 0
         currentTick = 66
         resetFlag = true
     }
 
     private fun doEffects()
     {
-        for (i in Channels.indices)
+        for (i in channelList.indices)
         {
-            Channels[i].DoEffects(currentTick)
+            channelList[i].doEffects(currentTick)
         }
         // reset special effect flags
-        BreakFlag = false
-        JumpFlag = false
+        breakFlag = false
+        jumpFlag = false
     }
 }

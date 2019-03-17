@@ -1,4 +1,4 @@
-package com.mrap.sma.modguru.Song
+package com.mrap.sma.modguru.song
 
 import com.mrap.sma.modguru.ConstValues
 
@@ -8,27 +8,27 @@ import com.mrap.sma.modguru.ConstValues
 class Note
 {
     /// <summary>
-    /// Nummer des Samples (0=kein Instrument)
+    /// Nummer des Samples (0=kein instrument)
     /// </summary>
-    var Instrument: Int = 0
+    var instrument: Int = 0
     /// <summary>
     /// Amiga-Periode
     /// </summary>
-    var Period: Int = 0
+    var period: Int = 0
     /// <summary>
     /// Notennummer C0-B8
     /// </summary>
-    var NoteNumber: Int = 0
+    var noteNumber: Int = 0
     /// <summary>
     /// Effekt-Nummer
     /// </summary>
-    var Effect: ConstValues.EEffect? = null
+    var effect: ConstValues.EEffect? = null
     // Effekt-String für Anzeige
-    var EffectString: String? = null
+    var effectString: String? = null
     /// <summary>
     /// Daten des Effekts
     /// </summary>
-    var EffectData: Int = 0
-    var EffectDataX: Int = 0
-    var EffectDataY: Int = 0
+    var effectData: Int = 0
+    var effectDataX: Int = 0
+    var effectDataY: Int = 0
 }

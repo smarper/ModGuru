@@ -1,4 +1,4 @@
-package com.mrap.sma.modguru.Song
+package com.mrap.sma.modguru.song
 
 /**
  * Created by SMA on 26.10.2014.
